@@ -2,9 +2,9 @@ import xs from 'xstream';
 
 function main() {
   return {
-    DOM: xs.periodic(1000)
-      .fold(prev => prev + 1, 0)
-      .map(i => `seconds elapsed: ${i}`),
+    // DOM: xs.periodic(1000)
+    //   .fold(prev => prev + 1, 0)
+    //   .map(i => `seconds elapsed: ${i}`),
     log: xs.periodic(2000)
       .fold(prev => prev + 1, 0)
   }
@@ -29,6 +29,16 @@ function logDriver(msg$) {
   });
 }
 
-const sink = main();
-domDriver(sink.DOM);
-logDriver(sink.log);
+function run(mainFn, drivers) {
+  const sinks = mainFn();
+  Object.keys(drivers).forEach(key => {
+    if (sinks[key]) {
+      drivers[key](sinks[key]);
+    }
+  })
+}
+
+run(main, {
+  // DOM: domDriver,
+  log: logDriver,
+});
