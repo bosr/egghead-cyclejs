@@ -1,9 +1,13 @@
 import xs from 'xstream';
 
 function main() {
-  return xs.periodic(1000)      // !--!--!--!--!--
-    .fold(prev => prev + 1, 0)  // 0--1--2--3--4--
-    .map(i => `seconds elapsed: ${i}`);
+  return {
+    DOM: xs.periodic(1000)
+      .fold(prev => prev + 1, 0)
+      .map(i => `seconds elapsed: ${i}`),
+    log: xs.periodic(2000)
+      .fold(prev => prev + 1, 0)
+  }
 }
 
 // need to separate logic from effects
@@ -26,4 +30,5 @@ function logDriver(msg$) {
 }
 
 const sink = main();
-logDriver(sink);
+domDriver(sink.DOM);
+logDriver(sink.log);
